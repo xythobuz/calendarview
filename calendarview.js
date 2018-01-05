@@ -6,7 +6,7 @@ function ical_event_source(url, color) {
   return {
     id: url,
     events: (start, end, timezone, callback) => {
-      fetch(url, {mode:"no-cors"}).then((response) => {
+      fetch(url).then((response) => {
         return response.text()
       }).then((data) => {
         var comp = new ICAL.Component(ICAL.parse(data));
