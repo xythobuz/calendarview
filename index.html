@@ -14,40 +14,10 @@
     <script src="lib/moment.min.js"></script>
     <script src="lib/fullcalendar.min.js"></script>
     <script src="lib/ical.min.js"></script>
-    <script src="lib/localforage.min.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="lib/babel.min.js"></script>
-    <!-- This sucks but I really like arrow functions -->
-    <script>
-      // Test for some ES6 support.
-      var scripts = ['icalsource.js', 'gcal.js', 'calendarview.js'];
-      var es6_support;
-      try {
-        new Function('(...a) => { for (x of a) {} }');
-        es6_support = true;
-      } catch(e) {
-        es6_support = false;
-      }
-      function add_script(script, type) {
-        var s = document.createElement('script');
-        s.src = script;
-        if (type) {
-          s.type = type;
-        }
-        document.head.appendChild(s);
-      }
-      for (var i = 0; i < scripts.length; i++) {
-        add_script(scripts[i], es6_support ? '' : 'text/babel');
-      }
-    </script>
+    <script src="gcal.js"></script>
+    <script src="calendarview.js"></script>
   </head>
   <body>
     <div id="calendar"></div>
-    <div id="settings">
-      <p><ul id="calendars-list"></ul>
-      <p><button id="add-google-calendars">Add Google Calendars</button>
-      <p><label for="ical-url">ICS URL:</label><input type="text" id="ical-url"><button id="add-ical">Add ICS calendar</button>
-      <p><a href="https://github.com/luser/calendarview">GitHub project page</a>
-    </div>
   </body>
 </html>
