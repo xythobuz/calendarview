@@ -11,21 +11,31 @@ function ical_event_source(url, color, filter) {
       }).then((data) => {
         var comp = new ICAL.Component(ICAL.parse(data));
         var events = comp.getAllSubcomponents('vevent').map(ve => new ICAL.Event(ve));
-        callback(
-          events
-            .filter(entry => !filter || new RegExp(filter).test(entry.summary))
-            .map(entry => {
-              return {
-                id: entry.uid,
-                title: entry.summary,
-                allDay: entry.startDate.isDate,
-                start: entry.startDate.toJSDate(),
-                end: entry.endDate.toJSDate(),
+        var filter_events = events.filter(entry => !filter || new RegExp(filter).test(entry.summary));
+        var our_events = Array()
+        filter_events.forEach(function(element) {
+          var end = ICAL.Time.now();
+          end.adjust(360, 0, 0, 0);
+          var it = element.iterator();
+          var entry;
+          while (entry = it.next()) {
+              var t = entry.clone();
+              t.addDuration(element.duration);
+              if (t.compare(end) == 1) break;
+              var event = {
+                id: element.uid,
+                title: element.summary,
+                allDay: element.startDate.isDate,
+                start: entry.toJSDate(),
+                end: t.toJSDate(),
                 color: color,
-                location: entry.location,
-                description: entry.description
+                location: element.location,
+                description: element.description
               };
-            }));
+              our_events.push(event);
+          }
+        });
+        callback(our_events);
       });
     }
   };
@@ -36,7 +46,7 @@ $(document).ready(function() {
     height: window.innerHeight,
     defaultView: 'month',
     timezone: 'local',
-    weekends: false
+    weekends: true
   });
 
   window.onresize = () => $('#calendar').fullCalendar('option', 'height', window.innerHeight);
